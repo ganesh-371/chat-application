@@ -30,14 +30,14 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "chatbot",
+    email: "chatbot@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
       title: "Home",
-      url: "dashboard/Home",
+      url: "./Home",
       icon: SquareTerminal,
       isActive: true,
       // items: [
@@ -57,7 +57,7 @@ const data = {
     },
     {
       title: "Chat",
-      url: "dashboard/Chat",
+      url: "./Chat",
       icon: Bot,
       // items: [
       //   {
@@ -76,7 +76,7 @@ const data = {
     },
     {
       title: "FAQ's",
-      url: "dashboard/FAQ",
+      url: "./FAQ",
       icon: BookOpen,
       // items: [
       //   {
@@ -99,7 +99,7 @@ const data = {
     },
     {
       title: "Support",
-      url: "dashboard/Support",
+      url: "./Support",
       icon: Settings2,
       // items: [
       //   {
