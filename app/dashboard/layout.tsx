@@ -24,6 +24,7 @@ export default function DashboardLayout({
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
+          <SidebarTrigger className="-ml-1" />
             {children}
           </SidebarInset>
         </SidebarProvider>
