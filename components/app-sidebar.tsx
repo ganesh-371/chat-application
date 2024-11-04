@@ -37,7 +37,7 @@ const data = {
   navMain: [
     {
       title: "Home",
-      url: "./Home",
+      url: "/dashboard/Home",
       icon: SquareTerminal,
       isActive: true,
       // items: [
@@ -57,7 +57,7 @@ const data = {
     },
     {
       title: "Chat",
-      url: "./Chat",
+      url: "/dashboard/Chat",
       icon: Bot,
       // items: [
       //   {
@@ -75,8 +75,8 @@ const data = {
       // ],
     },
     {
-      title: "FAQ's",
-      url: "./FAQ",
+      title: "Upload",
+      url: "/dashboard/Upload",
       icon: BookOpen,
       // items: [
       //   {
@@ -99,7 +99,7 @@ const data = {
     },
     {
       title: "Support",
-      url: "./Support",
+      url: "/dashboard/Support",
       icon: Settings2,
       // items: [
       //   {
