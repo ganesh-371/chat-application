@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+'use client'
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,13 +9,51 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { login } from "@/utils/APICalls"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function LoginForm() {
+
+  const [loginDetails, setLoginDetails] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: any) => {
+    setLoginDetails((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const response = await login(
+      loginDetails.email,
+      loginDetails.password
+    );
+
+    if (response) {
+      alert(response.message);
+      if (typeof window !== "undefined") {
+        localStorage.setItem('email', response.email);
+        localStorage.setItem('username', response.username);
+        localStorage.setItem('user_id', response.user_id);
+        localStorage.setItem('auth', "true");
+      }
+      const router = useRouter();
+      router.push("/dashboard");
+    }
+  };
+
   return (
     <div className="relative group">
       {/* Animated border background */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-gradient-xy"></div>
-      
+
       <Card className="relative mx-auto max-w-sm bg-gradient-to-br from-slate-50 to-white backdrop-blur-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -35,6 +72,8 @@ export function LoginForm() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                name="email"
+                onChange={handleChange}
                 className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
               />
             </div>
@@ -45,21 +84,24 @@ export function LoginForm() {
                   Forgot password?
                 </Link>
               </div>
-              <Input 
-                id="password" 
-                type="password" 
-                required 
+              <Input
+                id="password"
+                type="password"
+                required
+                name="password"
+                onChange={handleChange}
                 className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
               />
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
+              onClick={handleSubmit}
               className="w-full py-5 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-200 animate-gradient-x"
             >
               Login
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full py-5 text-lg font-semibold rounded-lg border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
             >
               {/* <img src="/google.svg" alt="Google" className="w-5 h-5 mr-2" /> */}

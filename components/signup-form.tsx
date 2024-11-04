@@ -1,5 +1,5 @@
+'use client'
 import Link from "next/link"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,13 +10,81 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useState } from "react"
+import { register } from "@/utils/APICalls"
+import router from "next/router"
+import { AxiosResponse } from "axios"
 
 export function SignupForm() {
+
+
+  const [form, setForm] = useState({
+    name: "",
+    username: "",
+    email: "",
+    company_name: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    username: "",
+    email: "",
+    company_name: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: any) => {
+
+    console.log(e.target.name, e.target.value);
+
+    setForm((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+
+    setErrors((prevState) => ({
+      ...prevState,
+      [e.target.name]: "",
+    }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    console.log(form);
+
+    const response = await register(
+      form.email,
+      form.password,
+      form.username,
+      form.name,
+      form.company_name
+    );
+
+    setLoading(false);
+
+    if (response) {
+      alert("Account created successfully");
+      router.push("/login");
+    }
+
+    
+
+  };
+
+
   return (
     <div className="relative group">
       {/* Animated border background */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-gradient-xy"></div>
-      
+
       <Card className="relative mx-auto max-w-3xl bg-gradient-to-br from-slate-50 to-white backdrop-blur-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -36,6 +104,8 @@ export function SignupForm() {
                   type="text"
                   placeholder="John Doe"
                   required
+                  name="name"
+                  onChange={handleChange}
                   className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
@@ -46,6 +116,8 @@ export function SignupForm() {
                   type="text"
                   placeholder="johndoe"
                   required
+                  name="username"
+                  onChange={handleChange}
                   className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
@@ -56,6 +128,8 @@ export function SignupForm() {
                   type="email"
                   placeholder="m@example.com"
                   required
+                  name="email"
+                  onChange={handleChange}
                   className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
@@ -66,32 +140,39 @@ export function SignupForm() {
                   type="text"
                   placeholder="Acme Inc."
                   required
+                  name="company_name"
+                  onChange={handleChange}
                   className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-slate-700">Password</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  required 
-                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  name="password"
+                  onChange={handleChange}
+                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-slate-700">Confirm Password</Label>
-                <Input 
-                  id="confirmPassword" 
-                  type="password" 
-                  required 
-                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200" 
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  name="confirmPassword"
+                  onChange={handleChange}
+                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />
               </div>
             </div>
 
             <div className="flex flex-col gap-3 mt-2">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
+                onClick={handleSubmit}
                 className="w-full py-6 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-200 animate-gradient-x"
               >
                 Create Account
