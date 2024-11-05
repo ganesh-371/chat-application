@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export function LoginForm() {
+  const router = useRouter();
+
 
   const [loginDetails, setLoginDetails] = useState({
     email: "",
@@ -37,14 +39,12 @@ export function LoginForm() {
     );
 
     if (response) {
-      alert(response.message);
       if (typeof window !== "undefined") {
         localStorage.setItem('email', response.email);
         localStorage.setItem('username', response.username);
         localStorage.setItem('user_id', response.user_id);
         localStorage.setItem('auth', "true");
       }
-      const router = useRouter();
       router.push("/dashboard");
     }
   };

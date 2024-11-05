@@ -40,12 +40,12 @@ const UploadFile = () => {
       }
   
       if (selectedFiles.length > 0) {
-        const formData = new FormData();
-        formData.append('folderName', folderName);
+        // const formData = new FormData();
+        // formData.append('folderName', folderName);
   
-        selectedFiles.forEach((file, index) => {
-          formData.append(`files[${index}]`, file);
-        });
+        // selectedFiles.forEach((file, index) => {
+        //   formData.append(`files[${index}]`, file);
+        // });
   
         // Show success message
         setStatusMessage('Files have been successfully submitted.');
