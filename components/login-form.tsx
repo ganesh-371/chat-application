@@ -39,8 +39,6 @@ export function LoginForm() {
     );
 
     if (response) {
-      // alert(response.message);
-      console.log(response)
       if (typeof window !== "undefined") {
         localStorage.setItem('email', response.data.email);
         localStorage.setItem('username', response.data.username);
