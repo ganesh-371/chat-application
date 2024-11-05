@@ -11,10 +11,14 @@ interface Props {
 }
 
 async function VerifyPage({ params }: Props) {
- 
-  const isSuccess = false;
 
-  if (!isSuccess) {
+  const { token } = params;
+  const response = await verify(token);
+  console.log(response);
+ 
+//   const isSuccess = false;
+
+  if (response.status === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
         <div className="text-center">

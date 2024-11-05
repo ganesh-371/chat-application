@@ -1,11 +1,5 @@
-import React from 'react'
+import { PieChart } from "@/components/dashboard/pie"
 
-const Home = () => {
-  return (
-    <div>
-      <h1>Home</h1>
-    </div>
-  )
+export default function Page() {
+  return <PieChart />;
 }
-
-export default Home

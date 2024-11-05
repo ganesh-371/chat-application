@@ -34,7 +34,7 @@ export const register = async (email: string, password: string, username: string
 export const verify = async (token: string) => {
     const response = await axios.post(`${apiBaseUrl}/api/v1/verify-email/${token}`, {}, {
         headers: {
-            // Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,  
         },
     });
 
