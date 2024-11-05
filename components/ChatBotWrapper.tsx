@@ -9,8 +9,8 @@ const ChatBotWrapper = () => {
   const excludedPaths = ['/login', '/signup','/']
   
   // Optional: Add debugging to verify paths
-  console.log('Current pathname:', pathname)
-  console.log('Is path excluded:', excludedPaths.includes(pathname))
+  // console.log('Current pathname:', pathname)
+  // console.log('Is path excluded:', excludedPaths.includes(pathname))
 
   if (excludedPaths.includes(pathname)) {
     return null

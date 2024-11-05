@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { verify } from "@/utils/APICalls";
 
 interface Props {
   params: {
