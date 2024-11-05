@@ -22,13 +22,12 @@ interface ChatBotProps {
   theme?: Theme;
 }
 
-const ChatBot = ({ theme  }: ChatBotProps) => {
+const ChatBot = ({ theme }: ChatBotProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [recognition, setRecognition] = useState<any>(null)
-  const [currentTheme, setCurrentTheme] = useState<Theme>(theme || defaultTheme)
-
+  const [currentTheme, setCurrentTheme] = useState<Theme | null>(null)
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -41,21 +40,18 @@ const ChatBot = ({ theme  }: ChatBotProps) => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (theme) {
-  //   console.log('Theme being applied:', theme)
-  //   setCurrentTheme(theme)
-  //   }
-  // }, [theme])
   useEffect(() => {
     if (theme) {
-      console.log('Theme being applied:', theme)
-      setCurrentTheme(prev => ({
-        ...defaultTheme,  // Start with default theme as base
-        ...theme         // Override with any provided theme properties
-      }))
+      setCurrentTheme(theme)
+    } else {
+      setCurrentTheme(defaultTheme)
     }
   }, [theme])
+
+  useEffect(() => {
+    console.log('currentTheme state:', currentTheme)
+  }, [currentTheme])
+
   const handleSend = async () => {
     if (input.trim()) {
       const newMessage: Message = { type: 'user', text: input }
@@ -113,17 +109,18 @@ const ChatBot = ({ theme  }: ChatBotProps) => {
     }
   }
 
+  const activeTheme = currentTheme || defaultTheme
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
         <div className="bg-white rounded-xl shadow-2xl w-[400px] h-[600px] flex flex-col">
           <div 
-            className={`flex justify-between items-center p-4 rounded-t-xl ${currentTheme?.primary}`}
+            className={`flex justify-between items-center p-4 rounded-t-xl ${activeTheme.primary}`}
           >
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <h3 className="font-semibold text-lg text-white">AI Assistant {currentTheme?.name }</h3>
+              <h3 className="font-semibold text-lg text-white">AI Assistant {activeTheme.name}</h3>
             </div>
             <Button 
               variant="ghost" 
@@ -144,7 +141,7 @@ const ChatBot = ({ theme  }: ChatBotProps) => {
                   className={`
                     p-3 rounded-2xl max-w-[80%] shadow-sm
                     ${msg.type === 'user' 
-                      ? `${currentTheme?.primary} text-white rounded-br-none` 
+                      ? `${activeTheme.primary} text-white rounded-br-none` 
                       : 'bg-gray-100 text-gray-800 rounded-bl-none'
                     }
                   `}
@@ -179,7 +176,7 @@ const ChatBot = ({ theme  }: ChatBotProps) => {
                 <Button 
                   size="icon"
                   onClick={handleSend}
-                  className={`${currentTheme?.primary} text-white`}
+                  className={`${activeTheme.primary} text-white`}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
@@ -190,7 +187,7 @@ const ChatBot = ({ theme  }: ChatBotProps) => {
       ) : (
         <Button
           onClick={() => setIsOpen(true)}
-          className={`rounded-full w-14 h-14 ${currentTheme?.primary} text-white shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out`}
+          className={`rounded-full w-14 h-14 ${activeTheme.primary} text-white shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out`}
         >
           <MessageCircle className="h-6 w-6" />
         </Button>

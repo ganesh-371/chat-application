@@ -6,7 +6,6 @@ import { Theme, themes } from '@/utils/themes'
 const defaultTheme: Theme = themes[0]
 const ChatPage = () => {
   const [selectedTheme, setSelectedTheme] = useState<Theme>(themes[0] || defaultTheme)
-
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Chat</h1>
@@ -27,7 +26,7 @@ const ChatPage = () => {
         </div>
       </div>
       
-      <ChatBot theme={selectedTheme} />
+      <ChatBot theme={selectedTheme} key={selectedTheme.name}/>
     </div>
   )
 }
