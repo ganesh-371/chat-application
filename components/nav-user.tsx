@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Button } from "./ui/button"
 
 export function NavUser({
   user,
@@ -104,7 +105,11 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Log out
+              <Button onClick={() => {
+                // const email = localStorage.getItem("email");
+                localStorage.removeItem("auth");
+                window.location.href = "/login";
+              }}>Log Out</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

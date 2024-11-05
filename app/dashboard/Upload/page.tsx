@@ -1,8 +1,9 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Upload, Send, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { uploadFiles } from '@/utils/APICalls';
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -12,6 +13,15 @@ const FAQPage = () => {
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [folderName, setFolderName] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
+  const [user_id, setUser_id] = useState('');
+
+  useEffect(() => {
+    const auth = localStorage.getItem('auth');
+    if (auth === "true") {
+      setUser_id(localStorage.getItem('user_id') || '');
+    }
+  }, []);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -31,7 +41,7 @@ const FAQPage = () => {
     setSelectedFiles(files => files.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!folderName) {
@@ -46,6 +56,8 @@ const FAQPage = () => {
       selectedFiles.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
+
+      const response = await uploadFiles(user_id, formData);
 
       // Show success message
       setStatusMessage('Files have been successfully submitted.');

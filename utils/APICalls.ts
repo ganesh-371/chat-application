@@ -40,3 +40,13 @@ export const verify = async (token: string) => {
 
     return response.data;
 };
+
+export const uploadFiles = async (user_id: string, formData: FormData) => {
+    const response = await axios.post(`${apiBaseUrl}/api/v1/upload-files/${user_id}`, formData, {
+        headers: {
+            // Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return response.data;
+};
