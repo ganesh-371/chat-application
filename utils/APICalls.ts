@@ -40,3 +40,14 @@ export const verify = async (token: string) => {
 
     return response.data;
 };
+
+export const uploadFiles = async (user_id: string, folderName: string,formData: FormData) => {
+    const response = await axios.post("https://chatbot.brainwave-labs.com/chat_bot/upload/45?folder_name=ganesh"
+        , formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+
+    return response.data;
+};

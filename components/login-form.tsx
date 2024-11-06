@@ -10,13 +10,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { login } from "@/utils/APICalls"
+import { isAuthenticated } from "@/utils/Authentication"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export function LoginForm() {
   const router = useRouter();
-
 
   const [loginDetails, setLoginDetails] = useState({
     email: "",
@@ -40,9 +40,9 @@ export function LoginForm() {
 
     if (response) {
       if (typeof window !== "undefined") {
-        localStorage.setItem('email', response.email);
-        localStorage.setItem('username', response.username);
-        localStorage.setItem('user_id', response.user_id);
+        localStorage.setItem('email', response.data.email);
+        localStorage.setItem('username', response.data.username);
+        localStorage.setItem('user_id', response.data.user_id);
         localStorage.setItem('auth', "true");
       }
       router.push("/dashboard");

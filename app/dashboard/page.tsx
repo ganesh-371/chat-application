@@ -1,13 +1,16 @@
-import { Separator } from "@/components/ui/separator"
-import { isAuthenticated } from "@/utils/Authentication"
-import { redirect } from "next/navigation"
+'use client'
+import { Separator } from "@/components/ui/separator";
+import { redirect } from "next/navigation";
 
 export default function Page() {
 
-  if(!isAuthenticated) {
-    redirect("/");
+  if (typeof window !== "undefined") {
+    const auth = localStorage.getItem('auth');
+    console.log(auth);
+    if (auth !== "true" || auth == null) {
+      redirect("/");
+    }
   }
-
 
   return (
     <>
