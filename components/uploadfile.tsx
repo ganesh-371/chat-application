@@ -55,13 +55,13 @@ const UploadFile = () => {
       // setStatusMessage('Files have been successfully submitted.');
       try{
         await uploadFiles("43", folderName, formData);
-        setStatusMessage('Files have been successfully submitted.');
+        // setStatusMessage('Files have been successfully submitted.');
         // Clear form
       setSelectedFiles([]);
       setFolderName('');
 
       }catch (error) {
-        setStatusMessage('File upload failed. Please try again.');
+        // setStatusMessage('File upload failed. Please try again.');
       }
       
     }

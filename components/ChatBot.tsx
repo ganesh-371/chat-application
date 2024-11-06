@@ -2,24 +2,24 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { MessageCircle, X, Mic, Send } from 'lucide-react'
-import { Theme } from '@/utils/themes';
+import styles from '../app/theme.module.css'
 
-interface Message {
-  type: 'user' | 'bot';
-  text: string;
+interface Theme {
+  name: string
+  primary: string
+  secondary: string
+  gradient: string
+  hover: string
+  textColor: string
 }
 
-// const defaultTheme: Theme = {
-//   name: 'Ocean Blue',
-//   primary: 'bg-blue-600',
-//   secondary: 'bg-blue-300',
-//   gradient: 'from-blue-500 to-blue-600',
-//   hover: 'hover:bg-blue-700',
-//   textColor: 'text-white',
-// }
+interface Message {
+  type: 'user' | 'bot'
+  text: string
+}
 
 interface ChatBotProps {
-  theme: Theme;
+  theme: Theme
 }
 
 const ChatBot = ({ theme }: ChatBotProps) => {
@@ -27,10 +27,6 @@ const ChatBot = ({ theme }: ChatBotProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [recognition, setRecognition] = useState<any>(null)
-  const [currentTheme, setCurrentTheme] = useState<Theme>(theme)
-  const [themeName, setThemeName] = useState<string>(theme?.name || "Ocean Blue")
-  const [themeColor, setThemeColor] = useState<string>(theme?.primary)
-
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -43,67 +39,32 @@ const ChatBot = ({ theme }: ChatBotProps) => {
     }
   }, [])
 
+  // Update theme colors whenever the theme prop changes
   useEffect(() => {
-    if (theme) {
-      console.log('Theme being applied:', theme)
-      setCurrentTheme(theme)
-      setThemeName(theme.name)
-      setThemeColor(theme.primary)
-    }
+    const rootStyles = document.documentElement.style
+    rootStyles.setProperty('--primary-color', theme.primary)
+    rootStyles.setProperty('--secondary-color', theme.secondary)
+    rootStyles.setProperty('--hover-color', theme.hover)
+    rootStyles.setProperty('--text-color', theme.textColor)
   }, [theme])
-
-  console.log("Rendered themeName: " + themeName)
 
   const handleSend = async () => {
     if (input.trim()) {
       const newMessage: Message = { type: 'user', text: input }
       setMessages(prevMessages => [...prevMessages, newMessage])
-
-      try {
-        const response = await fetch('https://chatbot.brainwave-labs.com/ask_gpt', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-          },
-          body: JSON.stringify({ "query": input }),
-        })
-
-        const data = await response.json()
-        const botMessage: Message = {
-          type: 'bot',
-          text: data?.data?.answer || 'Sorry, I could not process that.'
-        }
-        setMessages(prevMessages => [...prevMessages, botMessage])
-      } catch (error) {
-        console.error('Error:', error)
-        const errorMessage: Message = {
-          type: 'bot',
-          text: 'Sorry, there was an error processing your request.'
-        }
-        setMessages(prevMessages => [...prevMessages, errorMessage])
-      }
       setInput('')
+
+      const botMessage: Message = {
+        type: 'bot',
+        text: 'This is a response from the chatbot.'
+      }
+      setMessages(prevMessages => [...prevMessages, botMessage])
     }
   }
 
   const handleMic = () => {
     if (recognition) {
       recognition.start()
-
-      recognition.onstart = () => {
-        console.log('Voice recognition started...')
-      }
-
-      recognition.onspeechend = () => {
-        recognition.stop()
-      }
-
-      recognition.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error)
-      }
-
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript
         setInput(transcript)
@@ -111,54 +72,47 @@ const ChatBot = ({ theme }: ChatBotProps) => {
     }
   }
 
-  const activeTheme = currentTheme 
-
   return (
-    <div id={themeName} className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
-        <div className="bg-white rounded-xl shadow-2xl w-[400px] h-[600px] flex flex-col">
-          <h1 id={themeName} className="text-xl font-bold text-white">Hello</h1>
-          <div
-            className={`flex justify-between items-center p-4 rounded-t-xl ${themeColor}`}
+        <div 
+          className="bg-white rounded-xl shadow-2xl w-[400px] h-[600px] flex flex-col"
+          style={{ '--primary-color': theme.primary } as React.CSSProperties}
+        >
+          <div 
+            className="flex justify-between items-center p-4 rounded-t-xl"
+            style={{ 
+              backgroundColor: theme.primary,
+              color: theme.textColor 
+            }}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <h3 className="font-semibold text-lg text-white">AI Assistant {themeName}</h3>
-            </div>
+            <h3 className="font-semibold text-lg">AI Assistant</h3>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/20"
+              style={{ color: theme.textColor }}
             >
               <X className="h-5 w-5" />
             </Button>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`mb-4 flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+              <div key={index} className={`mb-4 flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`
-                    p-3 rounded-2xl max-w-[80%] shadow-sm
-                    ${msg.type === 'user'
-                      ? `${currentTheme?.primary} text-white rounded-br-none`
-                      : 'bg-gray-100 text-gray-800 rounded-bl-none'
-                    }
-                  `}
+                  className="p-3 rounded-2xl max-w-[80%] shadow-sm"
+                  style={{
+                    backgroundColor: msg.type === 'user' ? theme.primary : theme.secondary,
+                    color: theme.textColor,
+                  }}
                 >
                   <p className="text-sm leading-relaxed">{msg.text}</p>
-                  <div className="text-[10px] mt-1 opacity-70 text-right">
-                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
                 </div>
               </div>
             ))}
           </div>
           <div className="p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-            <div className="flex gap-2 items-center bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center bg-white rounded-lg shadow-sm border border-gray-200">
               <input
                 type="text"
                 value={input}
@@ -167,36 +121,38 @@ const ChatBot = ({ theme }: ChatBotProps) => {
                 className="flex-1 px-4 py-3 text-sm focus:outline-none rounded-lg"
                 placeholder="Type your message..."
               />
-              <div className="flex gap-1 px-2">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={handleMic}
-                  className="hover:bg-gray-100 text-gray-600"
-                >
-                  <Mic className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  onClick={handleSend}
-                  className={`${activeTheme.primary} text-white`}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                onClick={handleMic}
+                style={{ color: theme.primary }}
+              >
+                <Mic className="h-4 w-4" />
+              </Button>
+              <Button 
+                size="icon" 
+                onClick={handleSend} 
+                style={{ 
+                  backgroundColor: theme.primary,
+                  color: theme.textColor
+                }}
+              >
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
       ) : (
-        <>
-          <h1>{themeName}</h1>
-          <Button
-            onClick={() => setIsOpen(true)}
-            className={`rounded-full w-14 h-14 ${currentTheme?.primary} text-white shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out`}
-          >
-            <MessageCircle className="h-6 w-6" />
-          </Button>
-        </>
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="rounded-full w-14 h-14 shadow-lg"
+          style={{ 
+            backgroundColor: theme.primary,
+            color: theme.textColor
+          }}
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
       )}
     </div>
   )
