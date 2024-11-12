@@ -45,7 +45,7 @@ export function LoginForm() {
         localStorage.setItem('user_id', response.data.user_id);
         localStorage.setItem('auth', "true");
       }
-      router.push("/dashboard");
+      router.push("/otp");
     }
   };
 

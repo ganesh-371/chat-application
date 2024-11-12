@@ -38,10 +38,10 @@ const UploadFile = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!folderName) {
-      alert('Please enter a folder name.');
-      return;
-    }
+    // if (!folderName) {
+    //   alert('Please enter a folder name.');
+    //   return;
+    // }
 
     if (selectedFiles.length > 0) {
       const formData = new FormData();
@@ -110,15 +110,15 @@ const UploadFile = () => {
 
       {selectedFiles.length > 0 && (
         <footer className="border-t p-4 bg-gray-50">
-          <form onSubmit={handleSubmit} className="flex gap-4 items-center">
-            <Input
+          <form onSubmit={handleSubmit} className="flex justify-between gap-4 items-center">
+            {/* <Input
               type="text"
               placeholder="Enter folder name"
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
               className="flex-1"
               required
-            />
+            /> */}
             <label className="flex items-center cursor-pointer text-blue-600 hover:text-blue-700">
               <Upload size={24} className="mr-2" />
               <span>Upload More</span>

@@ -28,6 +28,7 @@ const ChatBot = ({ theme }: ChatBotProps) => {
   const [input, setInput] = useState('')
   const [recognition, setRecognition] = useState<any>(null)
 
+  // Initialize Speech Recognition
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (SpeechRecognition) {
@@ -35,9 +36,18 @@ const ChatBot = ({ theme }: ChatBotProps) => {
       recognitionInstance.continuous = false
       recognitionInstance.interimResults = false
       recognitionInstance.lang = 'en-US'
+      
+      // Handle errors
+      recognitionInstance.onerror = (event: { error: any }) => {
+        console.error('Speech recognition error detected:', event.error)
+      }
+
       setRecognition(recognitionInstance)
+    } else {
+      console.error('Speech Recognition API is not supported in this browser.')
     }
   }, [])
+  
 
   // Update theme colors whenever the theme prop changes
   useEffect(() => {
@@ -50,22 +60,43 @@ const ChatBot = ({ theme }: ChatBotProps) => {
 
   const handleSend = async () => {
     if (input.trim()) {
-      const newMessage: Message = { type: 'user', text: input }
-      setMessages(prevMessages => [...prevMessages, newMessage])
-      setInput('')
-
-      const botMessage: Message = {
-        type: 'bot',
-        text: 'This is a response from the chatbot.'
+      setMessages([...messages, { type: 'user', text: input }])
+  
+      try {
+        const response = await fetch('https://chatbot.brainwave-labs.com/ask_gpt', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            // "Access-Control-Allow-Credentials": 'true',
+            "Accept": "*/*"
+          },
+          body: JSON.stringify({ "query": input }),
+        })
+        
+        const data = await response.json()
+        setMessages(prev => [...prev, { type: 'bot', text: data?.data?.answer }])
+      } catch (error) {
+        console.error('Error:', error)
+        setMessages(prev => [...prev, { type: 'bot', text: 'Sorry, there was an error processing your request.' }])
       }
-      setMessages(prevMessages => [...prevMessages, botMessage])
+      setInput('')
     }
   }
 
   const handleMic = () => {
     if (recognition) {
       recognition.start()
-      recognition.onresult = (event: any) => {
+
+      recognition.onstart = () => {
+        console.log('Voice recognition started...')
+      }
+
+      recognition.onspeechend = () => {
+        recognition.stop()
+      }
+
+      recognition.onresult = (event: { results: { transcript: any }[][] }) => {
         const transcript = event.results[0][0].transcript
         setInput(transcript)
       }
