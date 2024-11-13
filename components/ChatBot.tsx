@@ -68,11 +68,14 @@ const ChatBot = ({ theme }: ChatBotProps) => {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            // "Access-Control-Allow-Credentials": 'true',
+            "Access-Control-Allow-Credentials": 'true',
             "Accept": "*/*"
           },
           body: JSON.stringify({ "query": input }),
         })
+        if (!response.ok) {
+          throw new Error(`Backend error: ${response.status} ${response.statusText}`)
+        }
         
         const data = await response.json()
         setMessages(prev => [...prev, { type: 'bot', text: data?.data?.answer }])

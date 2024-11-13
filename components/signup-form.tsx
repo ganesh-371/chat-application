@@ -19,18 +19,20 @@ export function SignupForm() {
   
   const [form, setForm] = useState({
     name: "",
-    username: "",
+    // username: "",
     email: "",
-    company_name: "",
+    domain: "",
+    confirmdomain:"",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
     name: "",
-    username: "",
+    // username: "",
     email: "",
-    company_name: "",
+    domain: "",
+    confirmdomain:"",
     password: "",
     confirmPassword: "",
   });
@@ -62,19 +64,20 @@ export function SignupForm() {
     const response = await register(
       form.email,
       form.password,
-      form.username,
+      // form.username,
       form.name,
-      form.company_name
+      form.domain
     );
 
     setLoading(false);
 
     if (response) {
-      alert("Account created successfully");
+      alert("Account created successfully,please verify");
       router.push("/login");
+    }else {
+      
+      alert("Failed to create account. Please try again.");
     }
-
-
 
   };
 
@@ -109,18 +112,6 @@ export function SignupForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-slate-700">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="johndoe"
-                  required
-                  name="username"
-                  onChange={handleChange}
-                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="email" className="text-slate-700">Email</Label>
                 <Input
                   id="email"
@@ -133,13 +124,25 @@ export function SignupForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="company" className="text-slate-700">Company Name</Label>
+                <Label htmlFor="company" className="text-slate-700">Domain Name</Label>
                 <Input
-                  id="company"
+                  id="domain"
                   type="text"
                   placeholder="Acme Inc."
                   required
-                  name="company_name"
+                  name="domain"
+                  onChange={handleChange}
+                  className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company" className="text-slate-700">Confirm Domain Name</Label>
+                <Input
+                  id="confirmdomain"
+                  type="text"
+                  placeholder="Acme Inc."
+                  required
+                  name="confirmdomain"
                   onChange={handleChange}
                   className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
                 />

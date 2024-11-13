@@ -12,7 +12,7 @@ interface UploadFileProps {
   user_id: string;
 }
 
-const UploadFile = () => {
+const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
   const [folderName, setFolderName] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
@@ -22,7 +22,8 @@ const UploadFile = () => {
     const validFiles = files.filter(
       (file) =>
         file.type === 'application/pdf' ||
-        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        file.type==='text/plain'
     );
     if (validFiles.length > 0) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...validFiles]);
@@ -45,20 +46,21 @@ const UploadFile = () => {
 
     if (selectedFiles.length > 0) {
       const formData = new FormData();
-      formData.append('folderName', folderName);
+      // formData.append('folderName', folderName);
 
-      selectedFiles.forEach((file, index) => {
-        formData.append(`files[${index}]`, file);
+      selectedFiles.forEach((file) => {
+        formData.append('files', file);
       });
 
       // Show success message
       // setStatusMessage('Files have been successfully submitted.');
       try{
-        await uploadFiles("43", folderName, formData);
-        // setStatusMessage('Files have been successfully submitted.');
+        await uploadFiles(user_id,formData);
+        setStatusMessage('Files have been successfully submitted.');
         // Clear form
       setSelectedFiles([]);
-      setFolderName('');
+      alert("files uploaded successfully")
+      // setFolderName('');
 
       }catch (error) {
         // setStatusMessage('File upload failed. Please try again.');
@@ -101,7 +103,7 @@ const UploadFile = () => {
               type="file"
               className="hidden"
               multiple
-              accept=".pdf,.docx"
+              accept=".pdf,.docx,.txt"
               onChange={handleFileChange}
             />
           </label>

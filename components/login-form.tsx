@@ -19,7 +19,7 @@ export function LoginForm() {
   const router = useRouter();
 
   const [loginDetails, setLoginDetails] = useState({
-    email: "",
+    domain: "",
     password: "",
   });
 
@@ -34,19 +34,25 @@ export function LoginForm() {
     e.preventDefault();
 
     const response = await login(
-      loginDetails.email,
+      loginDetails.domain,
       loginDetails.password
     );
+    console.log("response:",response);
 
-    if (response) {
+    if (response.status===1) {
       if (typeof window !== "undefined") {
-        localStorage.setItem('email', response.data.email);
-        localStorage.setItem('username', response.data.username);
-        localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('domain', response.data);
+        // localStorage.setItem('username', response.data.username);
+        // localStorage.setItem('user_id', response.data.user_id);
         localStorage.setItem('auth', "true");
       }
-      router.push("/otp");
+      router.push("/dashboard/Home");
     }
+    else{
+      alert("incorrect username or password")
+    }
+   
+
   };
 
   return (
@@ -66,13 +72,13 @@ export function LoginForm() {
         <CardContent>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email" className="text-slate-700">Email</Label>
+              <Label htmlFor="domain" className="text-slate-700">Domain name</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="domain"
+                type="text"
+                placeholder="www.example.com"
                 required
-                name="email"
+                name="domain"
                 onChange={handleChange}
                 className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
               />

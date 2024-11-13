@@ -24,9 +24,9 @@ async function VerifyPage({ params }: Props) {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Verification Failed</h1>
           <p className="mt-2 text-gray-600">Static error message for testing</p>
-          <Link href="/login">
+          <Link href="/signup">
             <Button className="mt-4">
-              Return to Sign In
+              Return to Sign UP
             </Button>
           </Link>
         </div>
