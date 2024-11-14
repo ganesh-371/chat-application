@@ -42,8 +42,10 @@ export const verify = async (token: string) => {
     return response.data;
 };
 
-export const uploadFiles = async (user_id: string,formData: FormData) => {
-    const response = await axios.post(`${apiBaseUrl}/upload/${user_id}`
+export const uploadFiles = async (formData: FormData) => {
+    const website = localStorage.getItem('domain') || ''; // www.abcd.com
+    const domainName = website.split('.')[1]; // Get 'abcd' from www.abcd.com
+    const response = await axios.post(`${apiBaseUrl}/upload?domain_name=${domainName}`
         , formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -53,10 +55,16 @@ export const uploadFiles = async (user_id: string,formData: FormData) => {
     return response.data;
 };
 
-export const otpVerify=async(user_id:string,otp:any)=>{
-    const response=await axios.post(`${apiBaseUrl}/verify_otp`,{
-        headers:{
-            
-        }
-    });
+export const verifyOTP=async(input_otp:string)=>{
+    try{
+        const response=await axios.post(`${apiBaseUrl}/verify_otp`,{input_otp},{
+            headers:{
+                "content-type":"application/json",
+            }
+        });
+        return response.data
+    }catch(error){
+        console.error("error while entering otp verification",error)
+
+    }
 };

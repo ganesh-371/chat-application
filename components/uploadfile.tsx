@@ -55,7 +55,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
       // Show success message
       // setStatusMessage('Files have been successfully submitted.');
       try{
-        await uploadFiles(user_id,formData);
+        await uploadFiles(formData);
         setStatusMessage('Files have been successfully submitted.');
         // Clear form
       setSelectedFiles([]);

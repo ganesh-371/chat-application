@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useRouter } from "next/navigation"
 
 import { toast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 
+import { verifyOTP } from "@/utils/APICalls"
+
 const FormSchema = z.object({
   pin: z.string().min(6, {
     message: "Your one-time password must be 6 characters.",
@@ -28,6 +31,7 @@ const FormSchema = z.object({
 })
 
  function InputOTPForm() {
+  const router=useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,18 +39,39 @@ const FormSchema = z.object({
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          
-        </pre>
-      ),
-    })
-    console.log("submitted");
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      const response = await verifyOTP(data.pin) ; // API call with input OTP
+      console.log("response for login",response)
+      if (response?.status === 1) {
+        toast({
+          title: "Login Successful",
+          description: "Redirecting to the dashboard...",
+        })
+        localStorage.setItem('domain', response.data.website);
+
+        localStorage.setItem('username', response.data.email);
+        localStorage.setItem('fullname', response.data.full_name);
+
+        // localStorage.setItem('user_id', response.data.user_id);
+        router.push("/dashboard/Home")  // Redirect on successful OTP verification
+      } else {
+        toast({
+          title: "OTP Verification Failed",
+          description: response.message || "Please try again.",
+          // status: "error",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred during OTP verification. Please try again.",
+        // status: "error",
+      })
+      console.error("OTP verification error:", error)
+    }
   }
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100"> {/* Centering the form */}
@@ -57,24 +82,24 @@ const FormSchema = z.object({
             name="pin"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>One-Time Password</FormLabel>
-                <FormControl>
-                    <InputOTP maxLength={6} {...field}>
-                    <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                        {/* <InputOTPSlot index={6} /> */}
-                    </InputOTPGroup>
-                    </InputOTP>
-                </FormControl>
-                <FormDescription>
-                    Please enter the one-time password sent to your phone.
-                </FormDescription>
-                <FormMessage />
+                  <FormLabel>One-Time Password</FormLabel>
+                    <FormControl>
+                      <InputOTP maxLength={6} {...field}>
+                      <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                          {/* <InputOTPSlot index={6} /> */}
+                      </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormDescription>
+                        Please enter the one-time password sent to your phone.
+                    </FormDescription>
+                  <FormMessage />
                 </FormItem>
             )}
             />

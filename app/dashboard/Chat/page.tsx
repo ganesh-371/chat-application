@@ -2,9 +2,11 @@
 import React, { useState } from 'react'
 import ChatBot from '@/components/ChatBot'
 import { themes } from '@/utils/themes'
+import ScriptGeneration from '@/components/script/script'
 
 const ChatPage = () => {
   const [selectedTheme, setSelectedTheme] = useState(themes[0])
+  const [generatedScript, setGeneratedScript] = useState<string>('')
 
   const handleThemeChange = (theme: typeof themes[0]) => {
     setSelectedTheme(theme)
@@ -14,10 +16,14 @@ const ChatPage = () => {
     document.documentElement.style.setProperty('--text-color', theme.textColor)
   }
 
+  const handleScriptGeneration = (script: string) => {
+    setGeneratedScript(script)
+  }
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Chat</h1>
-      <div className="space-y-4">
+      <div className="space-y-4 mb-8">
         <h2 className="text-lg font-semibold">Select Theme</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {themes.map((theme) => (
@@ -39,7 +45,11 @@ const ChatPage = () => {
           ))}
         </div>
       </div>
-      <ChatBot theme={selectedTheme} />
+
+      {/* Add ScriptGeneration component here */}
+      {generatedScript && <ScriptGeneration script={generatedScript} />}
+
+      <ChatBot theme={selectedTheme} onScriptGenerate={handleScriptGeneration} />
     </div>
   )
 }

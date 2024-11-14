@@ -29,9 +29,10 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
+  
   user: {
-    name: "chatbot",
-    email: "chatbot@example.com",
+    name: localStorage.getItem('fullname')||'fullname',
+    email: localStorage.getItem('username')|| 'emailname',
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
@@ -120,6 +121,11 @@ const data = {
       //   },
       // ],
     },
+    {
+      title:"Script",
+      url:"/dashboard/Script",
+      icon:Bot,
+    }
   ],
   navSecondary: [
     // {
@@ -153,6 +159,10 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const website = localStorage.getItem('domain') || ''; // www.abcd.com
+    const domainName = website.split('.')[1];
+    const fullname=localStorage.getItem('fullname')||'';
+    const Full_name=fullname
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -161,11 +171,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+                  <Command className="size-4" />                               
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">AI Chatbot</span>
-                  <span className="truncate text-xs">Brainwave Labs</span>
+                  <span className="truncate font-semibold">{domainName}</span>
+                  <span className="truncate text-xs">{Full_name}</span>
                 </div>
               </a>
             </SidebarMenuButton>
