@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { uploadFiles } from '@/utils/APICalls';
 
-interface FileWithPreview extends File {
+interface FileWithPreview {
+  name: string;
   preview?: string;
 }
 interface UploadFileProps {
@@ -13,7 +14,12 @@ interface UploadFileProps {
 }
 
 const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
-  const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>(() => {
+    // Load uploaded files from local storage on initial render
+    const savedFiles = localStorage.getItem('uploadedFiles');
+    return savedFiles ? JSON.parse(savedFiles).map((file: { name: string }) => ({ name: file.name })) : [];
+  });
   const [folderName, setFolderName] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
 
@@ -23,7 +29,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
       (file) =>
         file.type === 'application/pdf' ||
         file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-        file.type==='text/plain'
+        file.type === 'text/plain'
     );
     if (validFiles.length > 0) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...validFiles]);
@@ -33,41 +39,41 @@ const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
   };
 
   const handleRemoveFile = (index: number) => {
-    setSelectedFiles(files => files.filter((_, i) => i !== index));
+    setUploadedFiles((files) => files.filter((_, i) => i !== index));
+    const updatedFiles = uploadedFiles.filter((_, i) => i !== index);
+    localStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const allFiles = [...selectedFiles];
+    if (uploadedFiles.length > 0) {
+      const uploadedFileNames = uploadedFiles.map(file => file.name);
+      const validUploadedFiles = uploadedFileNames.map(name => {
+        const file = new File([name], name);
+        return file;
+      });
+      allFiles.push(...validUploadedFiles);
+    }
 
-    // if (!folderName) {
-    //   alert('Please enter a folder name.');
-    //   return;
-    // }
-
-    if (selectedFiles.length > 0) {
+    if (allFiles.length > 0) {
       const formData = new FormData();
-      // formData.append('folderName', folderName);
-
-      selectedFiles.forEach((file) => {
+      allFiles.forEach((file) => {
         formData.append('files', file);
       });
 
-      // Show success message
-      // setStatusMessage('Files have been successfully submitted.');
-      try{
+      try {
         await uploadFiles(formData);
-        setStatusMessage('Files have been successfully submitted.');
-        // Clear form
-      setSelectedFiles([]);
-      alert("files uploaded successfully")
-      // setFolderName('');
-
-      }catch (error) {
-        // setStatusMessage('File upload failed. Please try again.');
+        const newUploadedFiles = [...uploadedFiles, ...selectedFiles.map(file => ({ name: file.name }))];
+        // Save uploaded files to local storage
+        localStorage.setItem('uploadedFiles', JSON.stringify(newUploadedFiles));
+        setUploadedFiles(newUploadedFiles);
+        setSelectedFiles([]);
+        alert("Files uploaded successfully");
+      } catch (error) {
+        // Handle error
       }
-      
-    }
-     else {
+    } else {
       alert('Please upload at least one file before submitting.');
     }
   };
@@ -143,6 +149,22 @@ const UploadFile: React.FC<UploadFileProps> = ({ user_id }) => {
       {statusMessage && (
         <div className="fixed bottom-4 right-4 bg-green-100 text-green-800 p-4 rounded-lg shadow">
           {statusMessage}
+        </div>
+      )}
+
+      {uploadedFiles.length > 0 && (
+        <div className="p-4">
+          <h2 className="text-lg font-bold">Uploaded Files:</h2>
+          <ul className="list-disc pl-5">
+            {uploadedFiles.map((file, index) => (
+              <li key={index} className="flex justify-between items-center truncate bg-gray-100 p-2 rounded-md shadow-sm mb-2">
+                {file.name}
+                <button onClick={() => handleRemoveFile(index)} className="text-red-500 hover:text-red-700">
+                  <X size={20} />
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
