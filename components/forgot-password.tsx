@@ -1,4 +1,3 @@
-
 'use client'
 import { Button } from "@/components/ui/button"
 import {
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-// import { sendResetLink } from "@/utils/APICalls" // Assuming you have a function to send reset link
+import { forgotPassword } from "@/utils/APICalls" // Assuming you have a function to send reset link
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -19,21 +18,29 @@ import { useState } from "react"
   const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [domain, setDomain] = useState("");
 
   const handleChange = (e: any) => {
     setEmail(e.target.value);
   };
 
+  const handleDomainChange = (e: any) => {
+    setDomain(e.target.value);
+  };
+
   const handleSubmit = async (e: any) => {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // const response = await sendResetLink(email); // Call to send reset link
+    const response=await forgotPassword(email,domain)
 
-    // if (response) {
-    //   // Handle success (e.g., show a message or redirect)
-    //   alert("Reset link sent to your email!");
-    //   router.push("/login"); // Redirect to login after sending the link
-    // }
+    if (response.status===1) {
+      // Handle success (e.g., show a message or redirect)
+      alert("Reset link sent to your email!");
+      // router.push("/login"); // Redirect to login after sending the link
+    }
+    else{
+      alert("failed to send reset link")
+    }
   };
 
   return (
@@ -60,6 +67,17 @@ import { useState } from "react"
                 placeholder="m@example.com"
                 required
                 onChange={handleChange}
+                className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="domain" className="text-slate-700">Domain Name</Label>
+              <Input
+                id="domain"
+                type="text"
+                placeholder="example.com"
+                required
+                onChange={handleDomainChange}
                 className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
               />
             </div>
