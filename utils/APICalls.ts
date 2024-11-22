@@ -106,7 +106,7 @@ export const resetPassword = async (token: string, new_password: string) => {
 export const uploadFiles = async (formData: FormData) => {
     const website = localStorage.getItem('domain') || ''; // www.abcd.com
     const domainName = website.split('.')[1]; // Get 'abcd' from www.abcd.com
-    const response = await axios.post(`${apiBaseUrl}/upload?domain_name=${domainName}`
+    const response = await axios.post(`${apiBaseUrl}/new_upload?domain_name=${domainName}`
         , formData, {
         headers: {
             'Content-Type': 'multipart/form-data',

@@ -644,7 +644,12 @@ const ChatBot = ({ theme }: ChatBotProps) => {
         }
 
         const data = await response.json();
-        setMessages(prev => [...prev, { type: 'bot', text: data?.data?.answer }]);
+        if(data && data.data && typeof data.data.answer==='string'){
+          setMessages(prev => [...prev, { type: 'bot', text: data?.data?.answer }]);
+        }else{
+          setMessages(prev=>[...prev,{type:'bot',text:'please upload files '}])
+        }
+        
       } catch (error) {
         console.error('Error:', error);
         setMessages(prev => [...prev, { type: 'bot', text: 'Sorry, there was an error processing your request.' }]);
