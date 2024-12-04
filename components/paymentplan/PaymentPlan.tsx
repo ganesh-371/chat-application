@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { plans } from "@/components/PaymentPlan/planData";
+import { plans } from "@/components/paymentplan/planData";
 import Link from "next/link";
 import { Check, CheckCircle2, Star } from "lucide-react";
 
