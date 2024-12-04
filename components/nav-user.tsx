@@ -42,28 +42,35 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-    const fullname=localStorage.getItem('fullname')||'';
-    const Full_name=fullname.split("")[0].toUpperCase()
-    const domain=localStorage.getItem('domain') ||''
+  const fullname = typeof window !== 'undefined' && localStorage 
+    ? localStorage.getItem('fullname') || ''
+    : '';
+  const Full_name = fullname ? fullname.charAt(0).toUpperCase() : '';
+  const domain = typeof window !== 'undefined' && localStorage 
+    ? localStorage.getItem('domain') || ''
+    : '';
 
-    const handleLogout = async () => {
-      try {
-        // Call the API with the user's email as the domain
-        const response = await logout(domain);
-  
-        if (response.status === 1) {
-          // Logout successful
-          console.log(response.message);
+
+  const handleLogout = async () => {
+    try {
+      // Call the API with the user's email as the domain
+      const response = await logout(domain);
+
+      if (response.status === 1) {
+        // Logout successful
+        console.log(response.message);
+        if (typeof window !== 'undefined' && localStorage) {
           localStorage.removeItem("auth");
-          window.location.href = "/login"; // Redirect to login
-        } else {
-          // Handle unexpected statuses
-          console.error("Failed to log out:", response.message);
         }
-      } catch (error) {
-        console.error("An error occurred during logout:", error);
+        window.location.href = "/login"; // Redirect to login
+      } else {
+        // Handle unexpected statuses
+        console.error("Failed to log out:", response.message);
       }
-    };
+    } catch (error) {
+      console.error("An error occurred during logout:", error);
+    }
+  };
 
   return (
     <SidebarMenu>

@@ -31,8 +31,10 @@ import { useState } from "react"
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    localStorage.setItem("email", email);
-    localStorage.setItem("domain", domain);
+    if (typeof window !== 'undefined' && localStorage) {
+      localStorage.setItem("email", email);
+      localStorage.setItem("domain", domain);
+    }
 
     const response=await forgotPassword(email,domain)
     

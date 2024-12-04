@@ -40,7 +40,7 @@ export function LoginForm() {
     console.log("response:",response);
 
     if (response.status===1) {
-      if (typeof window !== "undefined") {
+      if (typeof window !== undefined) {
         localStorage.setItem('domain', response.data);
         // localStorage.setItem('username', response.data.username);
         // localStorage.setItem('user_id', response.data.user_id);

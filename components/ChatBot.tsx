@@ -120,8 +120,10 @@
 //   //   onScriptGenerate(script); // Call the callback to pass the script to the parent
 //   // };
 //   const generateEmbeddableScript = () => {
-//     // Retrieve the 'domain' from localStorage in your application
-//     const domain = localStorage.getItem('domain')?.split(".")[1] || 'default_domain';
+//     // Retrieve the 'domain' from localStorage in your application with safety check
+//     const domain = typeof window !== 'undefined' && localStorage 
+//       ? localStorage.getItem('domain')?.split(".")[1] || 'default_domain'
+//       : 'default_domain';
 //     const serializedDomain = JSON.stringify(domain); // Ensures proper escaping
   
 //     const scriptContent = `
@@ -418,7 +420,9 @@
 //       setMessages([...messages, { type: 'user', text: input }]);
 
 //       try {
-//         const domain = localStorage.getItem('domain')?.split(".")[1] || "default_domain";
+//         const domain = typeof window !== 'undefined' && localStorage 
+//           ? localStorage.getItem('domain')?.split(".")[1] || "default_domain"
+//           : "default_domain";
 //         const response = await fetch('https://chatbot.brainwave-labs.com/ai_chatbot', {
 //           method: 'POST',
 //           headers: {
@@ -628,7 +632,9 @@ const ChatBot = ({ theme }: ChatBotProps) => {
       setMessages([...messages, { type: 'user', text: input }]);
 
       try {
-        const domain = localStorage.getItem('domain')?.split(".")[1] || "default_domain";
+        const domain = typeof window !== 'undefined' && localStorage 
+          ? localStorage.getItem('domain')?.split(".")[1] || "default_domain"
+          : "default_domain";
         const response = await fetch('https://chatbot.brainwave-labs.com/ai_chatbot', {
           method: 'POST',
           headers: {
@@ -637,7 +643,7 @@ const ChatBot = ({ theme }: ChatBotProps) => {
             "Access-Control-Allow-Credentials": 'true',
             "Accept": "*/*"
           },
-          body: JSON.stringify({ "domain_name": domain, "query": input }),
+          body: JSON.stringify({ "domain_name":domain,"query": input }),
         });
         if (!response.ok) {
           throw new Error(`Backend error: ${response.status} ${response.statusText}`);

@@ -1,5 +1,3 @@
-
-
 'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -19,8 +17,9 @@ export default function ResetPassword({ params }: { params: { token: string } })
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const email = localStorage.getItem('email') || '';
-  const domain=localStorage.getItem('domain') || '';
+  // Add localStorage safety checks
+  const email = typeof window !== 'undefined' && localStorage ? localStorage.getItem('email') || '' : '';
+  const domain = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain') || '' : '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

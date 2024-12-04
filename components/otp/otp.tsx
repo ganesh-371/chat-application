@@ -30,8 +30,8 @@ const FormSchema = z.object({
   }),
 })
 
- function InputOTPForm() {
-  const router=useRouter()
+function InputOTPForm() {
+  const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -41,19 +41,20 @@ const FormSchema = z.object({
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      const response = await verifyOTP(data.pin) ; // API call with input OTP
-      console.log("response for login",response)
+      const response = await verifyOTP(data.pin) // API call with input OTP
+      console.log("response for login", response)
       if (response?.status === 1) {
         toast({
           title: "Login Successful",
           description: "Redirecting to the dashboard...",
         })
-        localStorage.setItem('domain', response.data.website);
 
-        localStorage.setItem('username', response.data.email);
-        localStorage.setItem('fullname', response.data.full_name);
+        if (typeof window !== 'undefined' && localStorage) {
+          localStorage.setItem('domain', response.data.website);
+          localStorage.setItem('username', response.data.email);
+          localStorage.setItem('fullname', response.data.full_name);
+        }
 
-        // localStorage.setItem('user_id', response.data.user_id);
         router.push("/dashboard/Home")  // Redirect on successful OTP verification
       } else {
         toast({
@@ -71,43 +72,42 @@ const FormSchema = z.object({
       console.error("OTP verification error:", error)
     }
   }
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100"> {/* Centering the form */}
-        <Form {...form}>
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-            <FormField
+          <FormField
             control={form.control}
             name="pin"
             render={({ field }) => (
-                <FormItem>
-                  <FormLabel>One-Time Password</FormLabel>
-                    <FormControl>
-                      <InputOTP maxLength={6} {...field}>
-                      <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                          {/* <InputOTPSlot index={6} /> */}
-                      </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormDescription>
-                        Please enter the one-time password sent to your phone.
-                    </FormDescription>
-                  <FormMessage />
-                </FormItem>
+              <FormItem>
+                <FormLabel>One-Time Password</FormLabel>
+                <FormControl>
+                  <InputOTP maxLength={6} {...field}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                      {/* <InputOTPSlot index={6} /> */}
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormDescription>
+                  Please enter the one-time password sent to your phone.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )}
-            />
+          />
 
-            <Button type="submit">Submit</Button>
-            <Button type="button"  className="mt-4 ml-3">Resend OTP</Button> {/* Added Resend OTP button */}
+          <Button type="submit">Submit</Button>
+          <Button type="button" className="mt-4 ml-3">Resend OTP</Button> {/* Added Resend OTP button */}
         </form>
-        </Form>
+      </Form>
     </div>
   )
 }

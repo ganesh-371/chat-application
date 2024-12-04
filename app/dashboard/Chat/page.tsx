@@ -77,7 +77,9 @@ const ChatPage = () => {
 
   const handleGenerateScript = () => {
     // Save the selected theme to localStorage or pass it via query params
-    localStorage.setItem('selectedTheme', JSON.stringify(selectedTheme));
+    if (typeof window !== 'undefined' && localStorage) {
+      localStorage.setItem('selectedTheme', JSON.stringify(selectedTheme));
+    }
     // Navigate to the script page
     router.push('/dashboard/Script');
   };

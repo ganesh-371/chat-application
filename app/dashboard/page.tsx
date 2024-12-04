@@ -1,22 +1,23 @@
-'use client'
+"use client";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Page() {
-
-  if (typeof window !== "undefined") {
-    const auth = localStorage.getItem('auth');
-    console.log(auth);
-    if (auth !== "true" || auth == null) {
-      redirect("/");
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const auth = localStorage.getItem("auth");
+      console.log(auth);
+      if (auth !== "true" || auth == null) {
+        redirect("/");
+      }
     }
-  }
+  }, []);
 
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2">
         <div className="flex items-center gap-2 px-4">
-
           <Separator orientation="vertical" className="mr-2 h-4" />
           {/* <Breadcrumb>
             <BreadcrumbList>
@@ -42,5 +43,5 @@ export default function Page() {
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
       </div>
     </>
-  )
+  );
 }

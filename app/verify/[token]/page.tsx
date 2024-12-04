@@ -20,7 +20,7 @@ async function VerifyPage({ params }: Props) {
       const response = await verify(token);
       console.log("verify page response:", response);
       console.log("Response details:", JSON.stringify(response, null, 2));
-      if (typeof Window !== "undefined") {
+      if (typeof Window !== undefined) {
         if (response.status === 1) {
           localStorage.setItem(
             "userData",

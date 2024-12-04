@@ -31,8 +31,8 @@ import {
 const data = {
   
   user: {
-    name: localStorage.getItem('fullname')||'fullname',
-    email: localStorage.getItem('username')|| 'emailname',
+    name: typeof window !== 'undefined' && localStorage ? localStorage.getItem('fullname') || 'fullname' : 'fullname',
+    email: typeof window !== 'undefined' && localStorage ? localStorage.getItem('username') || 'emailname' : 'emailname',
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
@@ -159,25 +159,20 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    // const website = localStorage.getItem('domain') || ''; // www.abcd.com
-    // const domainName = website.split('.')[1];
-    // const fullname=localStorage.getItem('fullname')||'';
-    // const Full_name=fullname
-
-    const website = typeof window !== 'undefined' ? localStorage.getItem('domain') || '' : '';
-  const domainName = website.split('.')[1];
+    // Add localStorage safety checks
+    const website = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain') || '' : '';
+    const domainName = website ? website.split('.')[1] : '';
   
-  // Check if running in the browser
-  const fullname = typeof window !== 'undefined' ? localStorage.getItem('fullname') || '' : '';
-  // const Full_name = fullname ? fullname.split("")[0].toUpperCase() : 'USER';
-  const Full_name=fullname.charAt(0).toUpperCase()+fullname.slice(1);
+    const fullname = typeof window !== 'undefined' && localStorage ? localStorage.getItem('fullname') || '' : '';
+    const Full_name = fullname ? fullname.charAt(0).toUpperCase() + fullname.slice(1) : '';
 
-  // Check if user is logged in
-  if (!fullname) {
-    alert("Please log in first."); // Show pop-up message
-    window.location.href = "/login"; // Redirect to login page
-    return null; // Prevent rendering the component
-  }
+
+    // Check if user is logged in - only run in browser
+    if (typeof window !== 'undefined' && !fullname) {
+      alert("Please log in first."); // Show pop-up message
+      window.location.href = "/login"; // Redirect to login page
+      return null; // Prevent rendering the component
+    }
 
 
   return (
