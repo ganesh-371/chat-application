@@ -396,8 +396,8 @@ const ScriptPage = () => {
     position: fixed;
     bottom: 80px;
     right: 20px;
-    width: 400px;
-    height: 600px;
+    width: 350px;
+    height: 570px;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -434,6 +434,38 @@ const ScriptPage = () => {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+    scrollbar-width: thin; /* Firefox */
+	  scrollbar-color: #ccc #f5f5f5;
+  }
+
+  	/* For WebKit browsers (Chrome, Safari, Edge) */
+.chatbot-messages::-webkit-scrollbar {
+	width: 0.1px; /* Thin scrollbar width */
+  }
+  
+  .chatbot-messages::-webkit-scrollbar-track {
+	background: #f5f5f5; /* Light grey ash background */
+  }
+  
+  .chatbot-messages::-webkit-scrollbar-thumb {
+	background: #ccc; /* Thumb color */
+	border-radius: 10px; /* Rounded edges for modern look */
+  }
+  
+  .chatbot-messages::-webkit-scrollbar-thumb:hover {
+	background: #b3b3b3; /* Slightly darker on hover */
+  }
+  
+  .chatbot-messages::-webkit-scrollbar-button {
+	display: none; /* Hide up and down scroll buttons */
+  }
+  .chatbot-window {
+    overscroll-behavior-y: contain;
+  }
+  
+  .chatbot-messages {
+	overscroll-behavior-y: none;
+	overscroll-behavior: contain;
   }
 
   .message {

@@ -327,9 +327,47 @@ export function SignupForm() {
     setError(null); // Reset error on input change
   };
 
+  const resetForm = () => {
+    // Reset form fields
+    setForm({
+      name: "",
+      email: "",
+      domain: "",
+      confirmdomain: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Reset validation state
+    setValidation({
+      domainMatch: false,
+      passwordMatch: false,
+      passwordStrength: {
+        hasLength: false,
+        hasUpperCase: false,
+        hasLowerCase: false,
+        hasNumber: false,
+        hasSpecialChar: false,
+      },
+      isDomainValid: false,
+    });
+
+    // Reset error and loading states
+    setError(null);
+    setLoading(false);
+
+    // Manually reset input fields
+    const form = document.querySelector('form');
+    if (form) {
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach((input: HTMLInputElement) => {
+        input.value = '';
+      });
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setError("")
     setLoading(true);
 
     // Validation checks before API call
@@ -378,6 +416,12 @@ export function SignupForm() {
       console.error("Registration error:", err);
       if (err.response) {
         // Server response exists but is an error
+
+        if (err.response.status === 400 && 
+          err.response.data?.detail === "This domain is already registered. Please choose a different one.") {
+        setError("This domain is already in use. Please choose a different domain.");
+        return;
+      }
         setError(`Error: ${err.response.data?.message || 'Something went wrong'}`);
       } else if (err.request) {
         // No response from server
@@ -386,10 +430,13 @@ export function SignupForm() {
         // Other errors
         setError(`Error: ${err.message}`);
       }
+    }finally{
+      setLoading(false);
     }
 
-    setLoading(false);
+   
   };
+
 
   const getValidationColor = (isValid: boolean): string =>
     isValid ? "text-green-500" : "text-red-500";
@@ -560,13 +607,31 @@ export function SignupForm() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-3 mt-2">
+              {/*<div className="flex flex-col gap-3 mt-2">
                 <Button
                   type="submit"
                   disabled={loading}
                   className="w-full py-6 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-200 animate-gradient-x"
                 >
                   {loading ? "Creating Account..." : "Create Account"}
+                </Button>
+              </div>*/}
+
+              <div className="flex flex-col md:flex-row gap-3 mt-2">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-6 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-200 animate-gradient-x"
+                >
+                  {loading ? "Creating Account..." : "Create Account"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={resetForm}
+                  variant="outline"
+                  className="w-full py-6 text-lg font-semibold rounded-lg border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
+                >
+                  Reset Form
                 </Button>
               </div>
 

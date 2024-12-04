@@ -681,7 +681,7 @@ const ChatBot = ({ theme }: ChatBotProps) => {
     <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
         <div 
-          className="bg-white rounded-xl shadow-2xl w-[400px] h-[600px] flex flex-col"
+          className="bg-white rounded-xl shadow-2xl w-[350px] h-[570px] flex flex-col"
           style={{ '--primary-color': theme.primary } as React.CSSProperties}
         >
           <div 

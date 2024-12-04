@@ -31,7 +31,12 @@ import { useState } from "react"
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
+    localStorage.setItem("email", email);
+    localStorage.setItem("domain", domain);
+
     const response=await forgotPassword(email,domain)
+    
+
 
     if (response.status===1) {
       // Handle success (e.g., show a message or redirect)

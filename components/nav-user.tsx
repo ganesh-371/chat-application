@@ -30,6 +30,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "./ui/button"
+import { logout } from "@/utils/APICalls"
 
 export function NavUser({
   user,
@@ -43,6 +44,26 @@ export function NavUser({
   const { isMobile } = useSidebar()
     const fullname=localStorage.getItem('fullname')||'';
     const Full_name=fullname.split("")[0].toUpperCase()
+    const domain=localStorage.getItem('domain') ||''
+
+    const handleLogout = async () => {
+      try {
+        // Call the API with the user's email as the domain
+        const response = await logout(domain);
+  
+        if (response.status === 1) {
+          // Logout successful
+          console.log(response.message);
+          localStorage.removeItem("auth");
+          window.location.href = "/login"; // Redirect to login
+        } else {
+          // Handle unexpected statuses
+          console.error("Failed to log out:", response.message);
+        }
+      } catch (error) {
+        console.error("An error occurred during logout:", error);
+      }
+    };
 
   return (
     <SidebarMenu>
@@ -107,11 +128,12 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              <Button onClick={() => {
+              <Button onClick={ 
                 // const email = localStorage.getItem("email");
-                localStorage.removeItem("auth");
-                window.location.href = "/login";
-              }}>Log Out</Button>
+                // localStorage.removeItem("auth");
+                // window.location.href = "/login";
+                handleLogout
+              }>Log Out</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

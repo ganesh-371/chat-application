@@ -26,6 +26,16 @@ export const login = async (domain: string, password: string) => {
     return response.data;
 };
 
+export const logout=async(domain:string)=>{
+    const response=await axios.post(`${apiBaseUrl}/logout`,{
+        domain:domain,
+        headers:{
+            'Content-Type': 'application/json',
+        },
+    });
+    return response.data
+}
+
 export const forgotPassword= async(email:string,domain:string)=>{
     const response=await axios.post(`${apiBaseUrl}/forgot_password`,{
         email:email,
@@ -66,37 +76,29 @@ export const verify = async (token: string) => {
     return response.data;
 };
 
-export const resetPassword = async (token: string, new_password: string) => {
-    console.log(token);
+export const resetPassword = async (token: string, new_password: string,domain:string) => {
     try {
         const response = await axios.post(
-            `${apiBaseUrl}/reset_password`, // Remove token from URL
+            `https://chatbot.brainwave-labs.com/chat_bot/reset_password?token=${token}`,
             {
-                token: token,                    // Add token in request body
                 new_password: new_password,
-                domain: "www.thaman.com"         // Add domain in request body
+                domain: domain
             },
             {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 }
             }
         );
         return response.data;
     } catch (error: any) {
-        // Better error handling
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
             console.error('Response Error:', error.response.data);
             throw new Error(error.response.data.message || 'Failed to reset password');
         } else if (error.request) {
-            // The request was made but no response was received
             console.error('Request Error:', error.request);
             throw new Error('No response received from server');
         } else {
-            // Something happened in setting up the request
             console.error('Error:', error.message);
             throw new Error('Error setting up the request');
         }

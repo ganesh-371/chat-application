@@ -19,6 +19,9 @@ export default function ResetPassword({ params }: { params: { token: string } })
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const email = localStorage.getItem('email') || '';
+  const domain=localStorage.getItem('domain') || '';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -47,7 +50,7 @@ export default function ResetPassword({ params }: { params: { token: string } })
     }
 
     try {
-      const response = await resetPassword(params.token, newPassword);
+      const response = await resetPassword(params.token, newPassword,domain);
       
       if (response.status === 1) {
         setSuccess(true);
@@ -68,6 +71,8 @@ export default function ResetPassword({ params }: { params: { token: string } })
       setLoading(false);
     }
   };
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-100 to-slate-200">
@@ -103,6 +108,18 @@ export default function ResetPassword({ params }: { params: { token: string } })
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
+
+              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              disabled
+              className="h-12 rounded-xl border-slate-200 bg-white/50 backdrop-blur-sm"
+              placeholder="Your email"
+        />
                 <Label htmlFor="newPassword" className="text-sm font-medium text-slate-700">
                   New Password
                 </Label>
