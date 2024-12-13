@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Upload, Send, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { uploadFiles } from '@/utils/APICalls';
@@ -16,10 +16,27 @@ interface UploadFileProps {
 }
 
 const UploadFile: React.FC<UploadFileProps> = () => {
-  if (!isAuthenticated()) {
-    alert('please login into website');
-    return; // Prevent navigation if not authenticated
-  }
+  useEffect(() => {
+    // const authenticated = isAuthenticated();
+    // if (authenticated !== null && !authenticated) {
+    //   alert('please login into website, Alert from pie');
+    //   window.location.href = '/login';
+    //   return; // Prevent navigation if not authenticated
+    // }
+
+    if (typeof window !== "undefined" && window.localStorage) {
+      console.log("Local Storage now present");
+      const response = localStorage.getItem("isAuthenticated") === "true";
+      if (response == false) {
+        alert("Not authenticated, login again");
+        window.location.href = '/login';
+        return; // Prevent navigation if not authenticated
+
+      }
+    } else {
+      alert("There is an issue with browser");
+    }
+  }, []);
   const domainName = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain')?.split('.')[1] || 'default' : 'default';
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>(() => {
