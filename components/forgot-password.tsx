@@ -30,6 +30,15 @@ import { useState } from "react"
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!email || !emailPattern.test(email)){
+      alert("please enter valid email address")
+      return;
+    }
+    if(!domain){
+      alert("please enter domain name")
+      return;
+    }
 
     if (typeof window !== 'undefined' && localStorage) {
       localStorage.setItem("email", email);

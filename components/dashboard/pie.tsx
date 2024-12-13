@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -10,15 +10,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+import { isAuthenticated } from "@/utils/Authentication";
+import { useEffect } from "react";
 
-export const description = "A bar chart"
+export const description = "A bar chart";
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -27,16 +29,40 @@ const chartData = [
   { month: "April", desktop: 73 },
   { month: "May", desktop: 209 },
   { month: "June", desktop: 214 },
-]
+];
 
 const chartConfig = {
   desktop: {
     label: "Desktop",
     color: "hsl(var(--chart-1))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function PieChart() {
+
+
+  useEffect(() => {
+    // const authenticated = isAuthenticated();
+    // if (authenticated !== null && !authenticated) {
+    //   alert('please login into website, Alert from pie');
+    //   window.location.href = '/login';
+    //   return; // Prevent navigation if not authenticated
+    // }
+
+    if (typeof window !== "undefined" && window.localStorage) {
+      console.log("Local Storage now present");
+      const response = localStorage.getItem("isAuthenticated") === "true";
+      if (response == false) {
+        alert("Not authenticated, login again");
+        window.location.href = '/login';
+        return; // Prevent navigation if not authenticated
+
+      }
+    } else {
+      alert("There is an issue with browser");
+    }
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -71,5 +97,5 @@ export function PieChart() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

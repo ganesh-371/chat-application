@@ -228,7 +228,7 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { register } from "@/utils/APICalls"; // Make sure this is correct and accessible
 import { useRouter } from "next/navigation";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, XCircle } from "lucide-react";
 
 interface FormState {
   name: string;
@@ -281,6 +281,8 @@ export function SignupForm() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword,setShowConfirmPassword]=useState(false)
 
   // Password strength validation
   const validatePassword = (password: string): PasswordStrength => {
@@ -406,7 +408,7 @@ export function SignupForm() {
       );
 
       if (response) {
-        alert("Account created successfully, please verify");
+        alert("Account created successfully, please verify email");
         router.push("/login");
       } else {
         setError("Failed to create account. Please try again.");
@@ -419,7 +421,7 @@ export function SignupForm() {
 
         if (err.response.status === 400 && 
           err.response.data?.detail === "This domain is already registered. Please choose a different one.") {
-        setError("This domain is already in use. Please choose a different domain.");
+        setError("This domain is already exists. Please choose a different domain.");
         return;
       }
         setError(`Error: ${err.response.data?.message || 'Something went wrong'}`);
@@ -436,7 +438,12 @@ export function SignupForm() {
 
    
   };
-
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const getValidationColor = (isValid: boolean): string =>
     isValid ? "text-green-500" : "text-red-500";
@@ -540,14 +547,27 @@ export function SignupForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-slate-700">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    name="password"
-                    onChange={handleChange}
-                    className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      name="password"
+                      onChange={handleChange}
+                      className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                   {form.password && (
                     <div className="space-y-1 text-sm mt-1">
                       <div className={getValidationColor(validation.passwordStrength.hasLength)}>
@@ -575,14 +595,27 @@ export function SignupForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="text-slate-700">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    required
-                    name="confirmPassword"
-                    onChange={handleChange}
-                    className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
-                  />
+                  <div className="relative">
+                    <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
+                        required
+                        name="confirmPassword"
+                        onChange={handleChange}
+                        className="rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+                    />
+                    <button
+                        type="button"
+                        onClick={toggleConfirmPasswordVisibility}
+                        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                    >
+                        {showConfirmPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                        ) : (
+                            <Eye className="h-5 w-5" />
+                        )}
+                    </button>
+                  </div>
                   {form.confirmPassword && (
                     <div className={`text-sm mt-1 ${getValidationColor(validation.passwordMatch)}`}>
                       {validation.passwordMatch ? (
@@ -606,16 +639,6 @@ export function SignupForm() {
                   {error}
                 </div>
               )}
-
-              {/*<div className="flex flex-col gap-3 mt-2">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-6 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-200 animate-gradient-x"
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </Button>
-              </div>*/}
 
               <div className="flex flex-col md:flex-row gap-3 mt-2">
                 <Button

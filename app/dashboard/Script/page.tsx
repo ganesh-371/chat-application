@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { themes } from '@/utils/themes';
 import ScriptGeneration from '@/components/script/script';
 import { useRouter } from 'next/navigation';
+import { isAuthenticated } from '@/utils/Authentication';
 
 // Define theme interface
 interface Theme {
@@ -12,6 +13,12 @@ interface Theme {
 }
 
 const ScriptPage = () => {
+
+  if (!isAuthenticated()) {
+    alert('please login into website');
+    window.location.href = '/login';
+    return; // Prevent navigation if not authenticated
+  }
   const [selectedTheme, setSelectedTheme] = useState<Theme>(themes[0]);
   const [generatedScript, setGeneratedScript] = useState<string>('');
   const router = useRouter();

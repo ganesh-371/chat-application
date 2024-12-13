@@ -27,6 +27,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Suspense, useEffect, useState } from "react"
 
 const data = {
   
@@ -159,20 +160,35 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    // Add localStorage safety checks
-    const website = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain') || '' : '';
-    const domainName = website ? website.split('.')[1] : '';
+
   
-    const fullname = typeof window !== 'undefined' && localStorage ? localStorage.getItem('fullname') || '' : '';
-    const Full_name = fullname ? fullname.charAt(0).toUpperCase() + fullname.slice(1) : '';
+  const [website, setWebsite] = useState<String | null>("")
+  const [profileName , setProfileName]=useState<String | null>("")
 
+  useEffect(() => {
+    if(typeof window !== undefined && localStorage) {
+      setWebsite(localStorage.getItem('domain') || null)
+      setProfileName(localStorage.getItem('fullname')|| null)
+      
 
-    // Check if user is logged in - only run in browser
-    if (typeof window !== 'undefined' && !fullname) {
-      alert("Please log in first."); // Show pop-up message
-      window.location.href = "/login"; // Redirect to login page
-      return null; // Prevent rendering the component
     }
+  }, [website,profileName])
+    // Add localStorage safety checks
+    // const website = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain') || '' : '';
+    const domainName = website ? website.split('.')[1] : '';
+    // const domainName = "App Domain Name";
+  
+    // const fullname = typeof window !== 'undefined' && localStorage ? localStorage.getItem('fullname') || '' : '';
+    const Full_name = profileName ? profileName.charAt(0).toUpperCase() + profileName.slice(1) : '';
+    // const Full_name = "App Full Name";
+
+
+    // // Check if user is logged in - only run in browser
+    // if (typeof window !== 'undefined' && !profileName) {
+    //   alert("Please log in first."); // Show pop-up message
+    //   window.location.href = "/login"; // Redirect to login page
+    //   return null; // Prevent rendering the component
+    // }
 
 
   return (
@@ -185,10 +201,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />                               
                 </div>
+                <Suspense>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{domainName}</span>
+                  <span className="truncate font-semibold">{domainName !== "" ? domainName : "Domain"}</span>
                   <span className="truncate text-xs">{Full_name}</span>
                 </div>
+                </Suspense>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

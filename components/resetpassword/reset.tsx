@@ -8,6 +8,8 @@ import { useState } from "react";
 import { resetPassword } from "@/utils/APICalls";
 import { useRouter } from "next/navigation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye } from "lucide-react";
+import { EyeOff } from "lucide-react";
 
 export default function ResetPassword({ params }: { params: { token: string } }) {
   const router = useRouter();
@@ -16,6 +18,9 @@ export default function ResetPassword({ params }: { params: { token: string } })
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false); // New state for new password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // New state for confirm password visibility
+
 
   // Add localStorage safety checks
   const email = typeof window !== 'undefined' && localStorage ? localStorage.getItem('email') || '' : '';
@@ -71,6 +76,13 @@ export default function ResetPassword({ params }: { params: { token: string } })
     }
   };
 
+  const toggleNewPasswordVisibility=()=>{
+    setShowNewPassword(prev=>!prev);
+  };
+  const toggleConfirmPasswordVisibility =()=>{
+    setShowConfirmPassword(prev => !prev)
+  }
+
   
 
   return (
@@ -122,31 +134,57 @@ export default function ResetPassword({ params }: { params: { token: string } })
                 <Label htmlFor="newPassword" className="text-sm font-medium text-slate-700">
                   New Password
                 </Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  required
-                  minLength={8}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="h-12 rounded-xl border-slate-200 bg-white/50 backdrop-blur-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter your new password"
-                />
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"} // Toggle between text and password
+                    required
+                    minLength={8}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="h-12 rounded-xl border-slate-200 bg-white/50 backdrop-blur-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
+                    placeholder="Enter your new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleNewPasswordVisibility}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
                   Confirm Password
                 </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12 rounded-xl border-slate-200 bg-white/50 backdrop-blur-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
-                  placeholder="Confirm your new password"
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-12 rounded-xl border-slate-200 bg-white/50 backdrop-blur-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
+                    placeholder="Confirm your new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <Button

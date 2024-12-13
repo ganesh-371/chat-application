@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { login } from "@/utils/APICalls"
 import { isAuthenticated } from "@/utils/Authentication"
+import { Eye } from "lucide-react"
+import { EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -22,7 +24,7 @@ export function LoginForm() {
     domain: "",
     password: "",
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleChange = (e: any) => {
     setLoginDetails((prevState) => ({
       ...prevState,
@@ -44,15 +46,19 @@ export function LoginForm() {
         localStorage.setItem('domain', response.data);
         // localStorage.setItem('username', response.data.username);
         // localStorage.setItem('user_id', response.data.user_id);
-        localStorage.setItem('auth', "true");
+        localStorage.setItem('isAuthenticated', "true");
       }
       router.push("/otp");
     }
     else{
-      alert("incorrect username or password")
+      alert("incorrect domain name or password")
     }
    
 
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -90,14 +96,27 @@ export function LoginForm() {
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                name="password"
-                onChange={handleChange}
-                className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  name="password"
+                  onChange={handleChange}
+                  className="border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
             <Button
               type="submit"

@@ -63,13 +63,15 @@ function InputOTPForm() {
           // status: "error",
         })
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred during OTP verification. Please try again.",
-        // status: "error",
-      })
-      console.error("OTP verification error:", error)
+    } catch (error:any) {
+      // toast({
+      //   title: "Error",
+      //   description: "An error occurred during OTP verification. Please try again.",
+      //   // status: "error",
+      // })
+      const errorMessage = error.message || "An unexpected error occurred";
+      alert(errorMessage); // Use an alert for the error
+      console.error("OTP verification error  please check otp once :", errorMessage);
     }
   }
 

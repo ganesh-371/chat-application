@@ -1,5 +1,8 @@
-import React from 'react';
+
+'use client'
+import React, { useState } from 'react';
 import { Mail, Phone, MessageCircle, FileText, Clock, Globe } from 'lucide-react';
+import { isAuthenticated } from '@/utils/Authentication';
 
 // Support Channels Data
 const supportChannelsData = [
@@ -84,8 +87,22 @@ const contactData = {
 };
 
 const Support = () => {
+  const [showAlert, setShowAlert] = useState(false); 
+
+  if (!isAuthenticated()) {
+    if (typeof window !== 'undefined') {
+      alert('please login into website'); // Show alert only in the browser
+      window.location.href = '/login'; // Redirect to login page
+    }
+    return; // Prevent further execution
+  }
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      {showAlert && ( // Render alert message if showAlert is true
+        <div className="bg-red-500 text-white p-4 rounded mb-4">
+          Please log in to access this page.
+        </div>
+      )}
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold mb-4">How Can We Help You?</h1>

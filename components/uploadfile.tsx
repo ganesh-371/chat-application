@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { Upload, Send, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { uploadFiles } from '@/utils/APICalls';
+import { isAuthenticated } from '@/utils/Authentication';
 
 interface FileWithPreview {
   name: string;
@@ -15,6 +16,10 @@ interface UploadFileProps {
 }
 
 const UploadFile: React.FC<UploadFileProps> = () => {
+  if (!isAuthenticated()) {
+    alert('please login into website');
+    return; // Prevent navigation if not authenticated
+  }
   const domainName = typeof window !== 'undefined' && localStorage ? localStorage.getItem('domain')?.split('.')[1] || 'default' : 'default';
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>(() => {
@@ -35,13 +40,16 @@ const UploadFile: React.FC<UploadFileProps> = () => {
     const validFiles = files.filter(file => 
       file.type === 'application/pdf' ||
       file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-      file.type === 'text/plain'
+      file.type === 'text/plain'||
+      file.type ==='image/jpeg' ||
+      file.type ==='image/png' ||
+      file.type ==='image/jpg'
     );
 
     if (validFiles.length > 0) {
       setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
     } else {
-      setStatusMessage('Please upload valid PDF, Word, or text files.');
+      setStatusMessage('Please upload valid PDF, Word,text or image files.');
       setTimeout(() => setStatusMessage(''), 3000);
     }
   };
@@ -115,7 +123,7 @@ const UploadFile: React.FC<UploadFileProps> = () => {
                   type="file"
                   className="hidden"
                   multiple
-                  accept=".pdf,.docx,.txt"
+                  accept=".pdf,.docx,.txt,.jpg,.jpeg,.png"
                   onChange={handleFileChange}
                   disabled={isUploading}
                 />

@@ -37,16 +37,28 @@ export const logout=async(domain:string)=>{
 }
 
 export const forgotPassword= async(email:string,domain:string)=>{
-    const response=await axios.post(`${apiBaseUrl}/forgot_password`,{
-        email:email,
-        domain:domain,
-        headers:{
-            'Content-Type':'multipart/form-data',
-            'access-control-origin':'*',
-            'acces-control-allow-origin':'*'
+    try{
+
+        const response=await axios.post(`${apiBaseUrl}/forgot_password`,{
+            email:email,
+            domain:domain,
+            headers:{
+                'Content-Type':'multipart/form-data',
+                'access-control-origin':'*',
+                'acces-control-allow-origin':'*'
+            }
+        });
+
+        if (response.data.status !==1){
+            throw new Error (response.data.message || "an Error Occured.Please try again");
         }
-    });
-    return response.data
+        return response.data
+
+    }catch(error:any){
+        return {status:0,message: error.message || "failed to send reset link"}
+    }
+
+
 }
 
 export const register = async (email: string, password: string,  full_name: string, domain: string) => {
@@ -120,16 +132,28 @@ export const uploadFiles = async (formData: FormData) => {
     return response.data;
 };
 
-export const verifyOTP=async(input_otp:string)=>{
-    try{
-        const response=await axios.post(`${apiBaseUrl}/verify_otp`,{input_otp},{
-            headers:{
-                "content-type":"application/json",
+export const verifyOTP = async (input_otp: string) => {
+    try {
+        const response = await axios.post(`${apiBaseUrl}/verify_otp`, { input_otp }, {
+            headers: {
+                "content-type": "application/json",
             }
         });
-        return response.data
-    }catch(error){
-        console.error("error while entering otp verification",error)
 
+        if (response.data.status !== 1) {
+            // Throw an error for any non-successful status
+            throw new Error(response.data.message || "OTP verification failed");
+        }
+
+        return response.data;
+    } catch (error: any) {
+        // Detailed error handling
+        if (error.response) {
+            throw new Error(error.response.data.message || "OTP verification failed");
+        } else if (error.request) {
+            throw new Error("No response received from server");
+        } else {
+            throw new Error("Error in OTP verification request");
+        }
     }
 };
